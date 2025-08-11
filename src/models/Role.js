@@ -22,7 +22,4 @@ const Role = sequelize.define(
   }
 )
 
-// Establece la relacion de muchos a muchos
-Role.belongsToMany(User, { through: 'user_roles' }) // 'user_roles' sera el nombre de la tabla intermedia
-
 export default Role

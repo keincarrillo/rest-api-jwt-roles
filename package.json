@@ -2,6 +2,13 @@
   "name": "rest-api-jwt-roles",
   "module": "index.js",
   "type": "module",
+  "version": "1.0.0",
+  "description": "app rest api jwt roles",
+  "author": "ken",
+  "scripts": {
+    "dev": "bun --watch index.js",
+    "start": "bun index.js"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "helmet": "8.1.0",

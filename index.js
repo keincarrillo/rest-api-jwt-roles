@@ -1,6 +1,9 @@
 import app from './src/app.js'
 import sequelize from './src/db/database.js'
 
+// Relations
+import './src/models/User_Roles.js'
+
 const port = process.env.PORT || 3000
 
 try {

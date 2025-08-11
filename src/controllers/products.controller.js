@@ -16,8 +16,11 @@ export const getProducts = async (req, res) => {
 export const createProduct = async (req, res) => {
   const { name, category, price, imgURL } = req.body
   try {
-    await Product.create({ name, category, price, imgURL })
-    res.sendStatus(204)
+    const productCreated = await Product.create(
+      { name, category, price, imgURL },
+      { returning: true }
+    )
+    res.status(201).json(productCreated)
   } catch (error) {
     console.error(error.message)
     res.status(500).json({ message: error.message })

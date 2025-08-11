@@ -28,7 +28,7 @@ export const updateProduct = async (req, res) => {
   const { name, category, price, imgURL } = req.body
   const { productId } = req.params
   try {
-    const [rowsAfected, [productUpdated]] = await Product.update(
+    const [rowsAfected, [updatedProduct]] = await Product.update(
       {
         name,
         category,
@@ -41,7 +41,7 @@ export const updateProduct = async (req, res) => {
       ? res.status(404).json({
           message: `No se encontro el producto con el id: ${productId}`
         })
-      : res.json(productUpdated)
+      : res.json(updatedProduct)
   } catch (error) {
     console.error(error.message)
     res.status(500).json({ message: error.message })

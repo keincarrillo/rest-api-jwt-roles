@@ -3,12 +3,8 @@ import Role from '../models/Role.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
-export const signIn = async (req, res) => {
-  res.send('signin')
-}
-
 export const signUp = async (req, res) => {
-  const { email, password, roles } = req.body
+  const { email, password, rol } = req.body
   try {
     // Hashear la contraseña
     const salt = await bcrypt.genSalt(10)
@@ -20,28 +16,33 @@ export const signUp = async (req, res) => {
     // Asignar los roles al usuario
     const foundRol = await Role.findOne({
       where: {
-        name: roles
+        name: rol
       }
     })
 
+    // Si no encuentra el rol que pasa el cliente le asigna user por defecto
     if (!foundRol) {
       const defaultRole = await Role.findOne({ where: { name: 'user' } })
       await newUser.setRoles(defaultRole)
     } else {
-      console.log(foundRol)
       await newUser.setRoles(foundRol)
     }
 
-    // Enviar respuesta con token(funciona para poder validar que el usuario esta logueado)
+    // Enviar respuesta con token(funciona para darle un pase al cliente de hacer ciertas acciones)
     const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
-      expiresIn: 86400 // 24 horas en segundos
+      // Se encripta la id del usuario, se le da una semilla, se le da un tiempo de expiracion
+      expiresIn: 60 * 60 * 24 // 24 horas en segundos
     })
 
     res
       .status(201)
-      .json({ message: `Usuario creado con exito, email: ${email}`, token })
+      .json({ message: `Usuario creado con exito, email: ${email}`, token }) // Se envia el token
   } catch (error) {
     console.error(error.message)
     res.status(500).json({ message: error.message })
   }
+}
+
+export const signIn = async (req, res) => {
+  res.send('signin')
 }

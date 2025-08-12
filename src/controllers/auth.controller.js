@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
 export const signUp = async (req, res) => {
-  const { email, password, rol } = req.body
+  const { email, password, roles } = req.body
   try {
     // Hashear la contraseña
     const salt = await bcrypt.genSalt(10)
@@ -16,7 +16,7 @@ export const signUp = async (req, res) => {
     // Asignar los roles al usuario
     const foundRol = await Role.findOne({
       where: {
-        name: rol
+        name: roles
       }
     })
 
@@ -44,5 +44,19 @@ export const signUp = async (req, res) => {
 }
 
 export const signIn = async (req, res) => {
-  res.send('signin')
+  const { email, password } = req.body
+
+  const userFound = await User.findOne({ where: { email } })
+
+  if (!userFound) return res.status(404).json({ message: 'User not found' })
+
+  const isMatch = await bcrypt.compare(password, userFound.password)
+
+  if (!isMatch) return res.status(401).json({ message: 'Invalid password' })
+
+  const token = jwt.sign({ id: userFound.id }, process.env.JWT_SECRET, {
+    expiresIn: 60 * 60 * 24
+  })
+
+  res.json({ token })
 }

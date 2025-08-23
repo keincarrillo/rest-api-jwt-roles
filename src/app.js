@@ -10,10 +10,11 @@ import './models/User_Roles.js'
 // Routes
 import productsRoutes from './routes/products.routes.js'
 import authRoutes from './routes/auth.routes.js'
+import userRoutes from './routes/user.routes.js'
 
 // Database && initial setup
 try {
-  await sequelize.sync({ force: true })
+  await sequelize.sync({ force: false })
   await createRoles()
 } catch (error) {
   console.error(error)
@@ -40,5 +41,6 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/api/products', productsRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/users', userRoutes)
 
 export default app

@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
 export const signUp = async (req, res) => {
-  const { email, password, roles } = req.body
+  const { email, password, role } = req.body
   try {
     // Hashear la contraseña
     const salt = await bcrypt.genSalt(10)
@@ -16,7 +16,7 @@ export const signUp = async (req, res) => {
     // Asignar los roles al usuario
     const foundRol = await Role.findOne({
       where: {
-        name: roles
+        name: role
       }
     })
 

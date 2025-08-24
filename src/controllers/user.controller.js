@@ -1,5 +1,6 @@
 import User from '../models/User'
 import bcrypt from 'bcryptjs'
+import Role from '../models/Role'
 
 export const getUsers = async (req, res) => {
   try {
@@ -36,6 +37,23 @@ export const createUser = async (req, res) => {
       await userCreated.setRoles(foundRol)
     }
     res.status(201).json(userCreated)
+  } catch (error) {
+    console.error(error.message)
+    res.status(500).json({ message: error.message })
+  }
+}
+
+export const updateUser = async (req, res) => {
+  const { userId } = req.params
+  const { email, password, role } = req.body
+  try {
+    const [updatedUser] = await User.update(
+      { email, password, role },
+      { where: { id: userId }, returning: true }
+    )
+    updatedUser === 0
+      ? res.status(404).json({ message: 'User not found' })
+      : res.sendStatus(200)
   } catch (error) {
     console.error(error.message)
     res.status(500).json({ message: error.message })
